@@ -1,5 +1,13 @@
 # auto-assignment
 
+## Arguments
+
+| name    | description                              | required | default         | format            |
+|:--------|:-----------------------------------------|:---------|:----------------|:------------------|
+| `token` | GitHub token                             | `true`   | -               | `string`          |
+| `users` | Users name of the person to be assigned. | `true`   | -               | `json` (`string`) |
+| `count` | Number of Users to be assigned.          | `false`  | Number of users | `number`/`string` |
+
 ## Example
 
 ```yaml
