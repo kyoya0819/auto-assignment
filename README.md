@@ -3,7 +3,7 @@
 ## Example
 
 ```yaml
-name: Test
+name: AutoAssignment
 
 on:
     pull_request:
