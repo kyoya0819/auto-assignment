@@ -20,4 +20,6 @@ jobs:
                   user: '["kyoya0819"]'
 ```
 
-(C) kyoya0819 2020
+## LICENSE
+
+MIT LICENSE
