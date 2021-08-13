@@ -1,0 +1,15 @@
+name: 'Auto Assignment'
+description: 'Automatically assigns when a pull request is opened.'
+author: 'kyoya0819'
+
+inputs:
+    token:
+        description: 'GitHub token'
+        required: true
+    user:
+        description: 'User name of the person to be assigned (JSON format)'
+        required: true
+
+runs:
+    using: 'node12'
+    main: 'dist/index.js'
