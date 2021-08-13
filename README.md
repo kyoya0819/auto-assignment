@@ -10,14 +10,14 @@ on:
         types: [opened]
 
 jobs:
-    test:
+    assignment:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
-            - uses: kyoya0819/auto-assignment@v1
+            - uses: kyoya0819/auto-assignment@v1.0.2
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
-                  user: '["kyoya0819"]'
+                  user: '["YOUR USERNAME"]'
 ```
 
 ## LICENSE
