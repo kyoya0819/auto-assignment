@@ -6350,21 +6350,40 @@ const check = (user, token) => __awaiter(void 0, void 0, void 0, function* () {
     const octokit = _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit(token);
     return octokit.rest.issues.checkUserCanBeAssigned(Object.assign(Object.assign({}, _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo), { assignee: user }));
 });
+/**
+ * Create a new array by extracting a specific number of arrays.
+ *
+ * @param array
+ * @param num
+ */
+const extractArray = (array, num) => {
+    const newArray = [];
+    while (newArray.length < num && 0 < array.length) {
+        const rand = Math.floor(Math.random() * array.length);
+        newArray.push(array[rand]);
+        array.splice(rand, 1);
+    }
+    return newArray;
+};
 const token = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("token");
-const input_user = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("user");
-const users = JSON.parse(input_user);
-Promise.all(users.map((user) => __awaiter(void 0, void 0, void 0, function* () {
+const input_users = JSON.parse(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("user"));
+const count = Number(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("count"));
+if (count > input_users.length) {
+    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed("The number of assignees is larger than the number of users specified.");
+    process.exit(1);
+}
+Promise.all(input_users.map((user) => __awaiter(void 0, void 0, void 0, function* () {
     return yield check(user, token);
 }))).then(() => {
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("All specified users can be assigned.");
-    const user = users[Math.floor(Math.random() * users.length)];
+    const users = extractArray(input_users, count);
     const octokit = _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit(token);
     const { pull_request } = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload;
     if (pull_request === undefined) {
         _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed("Unable to retrieve information about the pull request.");
         process.exit(1);
     }
-    octokit.rest.issues.addAssignees(Object.assign(Object.assign({}, _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo), { issue_number: pull_request.number, assignees: [user] })).then(() => {
+    octokit.rest.issues.addAssignees(Object.assign(Object.assign({}, _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo), { issue_number: pull_request.number, assignees: users })).then(() => {
         _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("Complete This Action ✨");
         process.exit(0);
     }).catch(() => {
