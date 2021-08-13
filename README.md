@@ -14,7 +14,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v2
-            - uses: kyoya0819/auto-assignment@v1.0.2
+            - uses: kyoya0819/auto-assignment@v1.1.0
               with:
                   token: ${{ secrets.GITHUB_TOKEN }}
                   user: '["YOUR USERNAME"]'

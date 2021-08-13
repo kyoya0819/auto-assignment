@@ -19,16 +19,41 @@ const check = async (user: string, token: string) => {
 };
 
 
-const token = core.getInput("token");
-const input_user = core.getInput("user");
-const users = JSON.parse(input_user);
+/**
+ * Create a new array by extracting a specific number of arrays.
+ *
+ * @param array
+ * @param num
+ */
+const extractArray = (array: string[], num: number) => {
+    const newArray: string[] = [];
 
-Promise.all(users.map(async user => {
+    while (newArray.length < num && 0 < array.length) {
+        const rand = Math.floor(Math.random() * array.length);
+        newArray.push(array[rand]);
+        array.splice(rand, 1);
+    }
+
+    return newArray;
+};
+
+
+const token = core.getInput("token");
+const input_users = JSON.parse(core.getInput("user"));
+const count = Number(core.getInput("count"));
+
+if (count > input_users.length) {
+
+    core.setFailed("The number of assignees is larger than the number of users specified.");
+    process.exit(1);
+}
+
+Promise.all(input_users.map(async user => {
     return await check(user, token);
 })).then(() => {
     core.info("All specified users can be assigned.");
 
-    const user = users[Math.floor(Math.random() * users.length)];
+    const users = extractArray(input_users, count);
 
     const octokit = github.getOctokit(token);
 
@@ -42,7 +67,7 @@ Promise.all(users.map(async user => {
     octokit.rest.issues.addAssignees({
         ...github.context.repo,
         issue_number: pull_request.number,
-        assignees: [user]
+        assignees: users
     }).then(() => {
 
         core.info("Complete This Action ✨");
