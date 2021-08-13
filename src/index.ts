@@ -39,8 +39,11 @@ const extractArray = (array: string[], num: number) => {
 
 
 const token = core.getInput("token");
-const input_users = JSON.parse(core.getInput("user"));
-const count = Number(core.getInput("count"));
+const input_users = JSON.parse(core.getInput("users"));
+let count = Number(core.getInput("count"));
+
+if (count === 0)
+    count = input_users.length;
 
 if (count > input_users.length) {
 

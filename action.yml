@@ -6,9 +6,12 @@ inputs:
     token:
         description: 'GitHub token'
         required: true
-    user:
-        description: 'User name of the person to be assigned (JSON format)'
+    users:
+        description: 'Users name of the person to be assigned. (JSON format)'
         required: true
+    count:
+        description: 'Number of Users to be assigned. If not entered, everyone will be assigned.'
+        required: false
 
 runs:
     using: 'node12'
