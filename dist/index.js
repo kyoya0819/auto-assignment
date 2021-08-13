@@ -6366,8 +6366,10 @@ const extractArray = (array, num) => {
     return newArray;
 };
 const token = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("token");
-const input_users = JSON.parse(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("user"));
-const count = Number(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("count"));
+const input_users = JSON.parse(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("users"));
+let count = Number(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("count"));
+if (count === 0)
+    count = input_users.length;
 if (count > input_users.length) {
     _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed("The number of assignees is larger than the number of users specified.");
     process.exit(1);
