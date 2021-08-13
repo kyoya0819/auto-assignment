@@ -6275,35 +6275,6 @@ module.exports = require("zlib");
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__nccwpck_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__nccwpck_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getters */
-/******/ 	(() => {
-/******/ 		// define getter functions for harmony exports
-/******/ 		__nccwpck_require__.d = (exports, definition) => {
-/******/ 			for(var key in definition) {
-/******/ 				if(__nccwpck_require__.o(definition, key) && !__nccwpck_require__.o(exports, key)) {
-/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
-/******/ 				}
-/******/ 			}
-/******/ 		};
-/******/ 	})();
-/******/ 	
-/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
-/******/ 	(() => {
-/******/ 		__nccwpck_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	(() => {
 /******/ 		// define __esModule on exports
@@ -6324,11 +6295,14 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
+// ESM COMPAT FLAG
 __nccwpck_require__.r(__webpack_exports__);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __nccwpck_require__(186);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__nccwpck_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1__ = __nccwpck_require__(438);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__nccwpck_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_1__);
+
+// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
+var core = __nccwpck_require__(186);
+// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
+var github = __nccwpck_require__(438);
+;// CONCATENATED MODULE: ./src/scripts/check.ts
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -6339,7 +6313,6 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
     });
 };
 
-
 /**
  * Function to check if a user can be assigned.
  *
@@ -6347,9 +6320,25 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
  * @param token
  */
 const check = (user, token) => __awaiter(void 0, void 0, void 0, function* () {
-    const octokit = _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit(token);
-    return octokit.rest.issues.checkUserCanBeAssigned(Object.assign(Object.assign({}, _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo), { assignee: user }));
+    const octokit = github.getOctokit(token);
+    return octokit.rest.issues.checkUserCanBeAssigned(Object.assign(Object.assign({}, github.context.repo), { assignee: user }));
 });
+/* harmony default export */ const scripts_check = (check);
+
+;// CONCATENATED MODULE: ./src/scripts/kill.ts
+
+/**
+ * Kill Process with message.
+ *
+ * @param message
+ */
+const kill = (message) => {
+    core.setFailed(message);
+    process.exit(1);
+};
+/* harmony default export */ const scripts_kill = (kill);
+
+;// CONCATENATED MODULE: ./src/scripts/extractArray.ts
 /**
  * Create a new array by extracting a specific number of arrays.
  *
@@ -6365,36 +6354,83 @@ const extractArray = (array, num) => {
     }
     return newArray;
 };
-const token = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("token");
-const input_users = JSON.parse(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("users"));
-let count = Number(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("count"));
-if (count === 0)
-    count = input_users.length;
-if (count > input_users.length) {
-    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed("The number of assignees is larger than the number of users specified.");
-    process.exit(1);
-}
-Promise.all(input_users.map((user) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield check(user, token);
-}))).then(() => {
-    _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("All specified users can be assigned.");
-    const users = extractArray(input_users, count);
-    const octokit = _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit(token);
-    const { pull_request } = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload;
+/* harmony default export */ const scripts_extractArray = (extractArray);
+
+;// CONCATENATED MODULE: ./src/scripts/variables.ts
+
+
+
+
+/**
+ * Returns an array of user names.
+ *
+ * @param selected
+ */
+const users = (selected = false) => {
+    const input_users = JSON.parse(core.getInput("users"));
+    if (selected)
+        return scripts_extractArray(input_users, count());
+    else
+        return input_users;
+};
+/**
+ * Return the set number of assignees.
+ */
+const count = () => {
+    let count = Number(core.getInput("count"));
+    if (count === 0)
+        count = users().length;
+    if (count > users().length)
+        scripts_kill("The number of assignees is larger than the number of users specified.");
+    return count;
+};
+/**
+ * Return the GitHub token.
+ */
+const token = () => {
+    return core.getInput("token");
+};
+/**
+ * Return the number of the pull request.
+ */
+const pull_request = () => {
+    const pull_request = github.context.payload.pull_request;
     if (pull_request === undefined) {
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed("Unable to retrieve information about the pull request.");
+        scripts_kill("Unable to retrieve information about the pull request.");
         process.exit(1);
     }
-    octokit.rest.issues.addAssignees(Object.assign(Object.assign({}, _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo), { issue_number: pull_request.number, assignees: users })).then(() => {
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__.info("Complete This Action ✨");
+    else
+        return pull_request.number;
+};
+
+;// CONCATENATED MODULE: ./src/index.ts
+var src_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+
+
+
+Promise.all(users().map((user) => src_awaiter(void 0, void 0, void 0, function* () {
+    return yield scripts_check(user, token());
+}))).then(() => {
+    core.info("All specified users can be assigned.");
+    github.getOctokit(token()).rest.issues.addAssignees(Object.assign(Object.assign({}, github.context.repo), { issue_number: pull_request(), assignees: users(true) })).then(() => {
+        core.info("Complete This Action ✨");
         process.exit(0);
     }).catch(() => {
-        _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed("Cannot be assigned.");
-        process.exit(1);
+        scripts_kill("Cannot be assigned.");
     });
 }).catch((data) => {
     const user = data.response.url.match(/[^/]*?$/)[0];
-    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(`"${user}" cannot be assigned.`);
+    scripts_kill(`"${user}" cannot be assigned.`);
 });
 
 })();
