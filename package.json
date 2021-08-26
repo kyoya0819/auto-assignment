@@ -10,7 +10,7 @@
         "lint:fix": "eslint \"./src/**/*.{js,ts,jsx,tsx}\" --fix"
     },
     "devDependencies": {
-        "@types/node": "^16.7.1",
+        "@types/node": "^16.7.2",
         "@typescript-eslint/eslint-plugin": "^4.29.3",
         "@typescript-eslint/parser": "^4.29.3",
         "@vercel/ncc": "^0.29.2",
