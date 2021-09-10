@@ -6333,15 +6333,6 @@ var core = __nccwpck_require__(186);
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
 var github = __nccwpck_require__(438);
 ;// CONCATENATED MODULE: ./src/scripts/check.ts
-var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 
 /**
  * Function to check if a user can be assigned.
@@ -6349,10 +6340,13 @@ var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argume
  * @param user
  * @param token
  */
-const check = (user, token) => __awaiter(void 0, void 0, void 0, function* () {
+const check = async (user, token) => {
     const octokit = github.getOctokit(token);
-    return octokit.rest.issues.checkUserCanBeAssigned(Object.assign(Object.assign({}, github.context.repo), { assignee: user }));
-});
+    return octokit.rest.issues.checkUserCanBeAssigned({
+        ...github.context.repo,
+        assignee: user,
+    });
+};
 /* harmony default export */ const scripts_check = (check);
 
 ;// CONCATENATED MODULE: ./src/scripts/kill.ts
@@ -6434,25 +6428,20 @@ const pull_request = () => {
 };
 
 ;// CONCATENATED MODULE: ./src/index.ts
-var src_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 
 
 
 
 
-Promise.all(users().map((user) => src_awaiter(void 0, void 0, void 0, function* () {
-    return yield scripts_check(user, token());
-}))).then(() => {
+Promise.all(users().map(async (user) => {
+    return await scripts_check(user, token());
+})).then(() => {
     core.info("All specified users can be assigned.");
-    github.getOctokit(token()).rest.issues.addAssignees(Object.assign(Object.assign({}, github.context.repo), { issue_number: pull_request(), assignees: users(true) })).then(() => {
+    github.getOctokit(token()).rest.issues.addAssignees({
+        ...github.context.repo,
+        issue_number: pull_request(),
+        assignees: users(true)
+    }).then(() => {
         core.info("Complete This Action ✨");
         process.exit(0);
     }).catch(() => {
