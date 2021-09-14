@@ -6160,6 +6160,264 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 144:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const core = __importStar(__nccwpck_require__(186));
+const github = __importStar(__nccwpck_require__(438));
+const check_1 = __importDefault(__nccwpck_require__(783));
+const kill_1 = __importDefault(__nccwpck_require__(38));
+const variables_1 = __nccwpck_require__(953);
+Promise.all((0, variables_1.users)().map((user) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield (0, check_1.default)(user, (0, variables_1.token)());
+}))).then(() => {
+    core.info("All specified users can be assigned.");
+    github.getOctokit((0, variables_1.token)()).rest.issues.addAssignees(Object.assign(Object.assign({}, github.context.repo), { issue_number: (0, variables_1.pull_request)(), assignees: (0, variables_1.users)(true) })).then(() => {
+        core.info("Complete This Action ✨");
+        process.exit(0);
+    }).catch(() => {
+        (0, kill_1.default)("Cannot be assigned.");
+    });
+}).catch((data) => {
+    const user = data.response.url.match(/[^/]*?$/)[0];
+    (0, kill_1.default)(`"${user}" cannot be assigned.`);
+});
+
+
+/***/ }),
+
+/***/ 783:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const github = __importStar(__nccwpck_require__(438));
+/**
+ * Function to check if a user can be assigned.
+ *
+ * @param user
+ * @param token
+ */
+const check = (user, token) => __awaiter(void 0, void 0, void 0, function* () {
+    const octokit = github.getOctokit(token);
+    return octokit.rest.issues.checkUserCanBeAssigned(Object.assign(Object.assign({}, github.context.repo), { assignee: user }));
+});
+exports.default = check;
+
+
+/***/ }),
+
+/***/ 140:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+/**
+ * Create a new array by extracting a specific number of arrays.
+ *
+ * @param array
+ * @param num
+ */
+const extractArray = (array, num) => {
+    const newArray = [];
+    while (newArray.length < num && 0 < array.length) {
+        const rand = Math.floor(Math.random() * array.length);
+        newArray.push(array[rand]);
+        array.splice(rand, 1);
+    }
+    return newArray;
+};
+exports.default = extractArray;
+
+
+/***/ }),
+
+/***/ 38:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const core = __importStar(__nccwpck_require__(186));
+/**
+ * Kill Process with message.
+ *
+ * @param message
+ */
+const kill = (message) => {
+    core.setFailed(message);
+    process.exit(1);
+};
+exports.default = kill;
+
+
+/***/ }),
+
+/***/ 953:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.pull_request = exports.token = exports.count = exports.users = void 0;
+const core = __importStar(__nccwpck_require__(186));
+const github = __importStar(__nccwpck_require__(438));
+const kill_1 = __importDefault(__nccwpck_require__(38));
+const extractArray_1 = __importDefault(__nccwpck_require__(140));
+/**
+ * Returns an array of user names.
+ *
+ * @param selected
+ */
+const users = (selected = false) => {
+    const input_users = JSON.parse(core.getInput("users"));
+    if (selected)
+        return (0, extractArray_1.default)(input_users, (0, exports.count)());
+    else
+        return input_users;
+};
+exports.users = users;
+/**
+ * Return the set number of assignees.
+ */
+const count = () => {
+    let count = Number(core.getInput("count"));
+    if (count === 0)
+        count = (0, exports.users)().length;
+    if (count > (0, exports.users)().length)
+        (0, kill_1.default)("The number of assignees is larger than the number of users specified.");
+    return count;
+};
+exports.count = count;
+/**
+ * Return the GitHub token.
+ */
+const token = () => {
+    return core.getInput("token");
+};
+exports.token = token;
+/**
+ * Return the number of the pull request.
+ */
+const pull_request = () => {
+    const pull_request = github.context.payload.pull_request;
+    if (pull_request === undefined) {
+        (0, kill_1.default)("Unable to retrieve information about the pull request.");
+        process.exit(1);
+    }
+    else
+        return pull_request.number;
+};
+exports.pull_request = pull_request;
+
+
+/***/ }),
+
 /***/ 877:
 /***/ ((module) => {
 
@@ -6305,155 +6563,17 @@ module.exports = require("zlib");
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	(() => {
-/******/ 		// define __esModule on exports
-/******/ 		__nccwpck_require__.r = (exports) => {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/compat */
 /******/ 	
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be in strict mode.
-(() => {
-"use strict";
-// ESM COMPAT FLAG
-__nccwpck_require__.r(__webpack_exports__);
-
-// EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
-var core = __nccwpck_require__(186);
-// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
-var github = __nccwpck_require__(438);
-;// CONCATENATED MODULE: ./src/scripts/check.ts
-
-/**
- * Function to check if a user can be assigned.
- *
- * @param user
- * @param token
- */
-const check = async (user, token) => {
-    const octokit = github.getOctokit(token);
-    return octokit.rest.issues.checkUserCanBeAssigned({
-        ...github.context.repo,
-        assignee: user,
-    });
-};
-/* harmony default export */ const scripts_check = (check);
-
-;// CONCATENATED MODULE: ./src/scripts/kill.ts
-
-/**
- * Kill Process with message.
- *
- * @param message
- */
-const kill = (message) => {
-    core.setFailed(message);
-    process.exit(1);
-};
-/* harmony default export */ const scripts_kill = (kill);
-
-;// CONCATENATED MODULE: ./src/scripts/extractArray.ts
-/**
- * Create a new array by extracting a specific number of arrays.
- *
- * @param array
- * @param num
- */
-const extractArray = (array, num) => {
-    const newArray = [];
-    while (newArray.length < num && 0 < array.length) {
-        const rand = Math.floor(Math.random() * array.length);
-        newArray.push(array[rand]);
-        array.splice(rand, 1);
-    }
-    return newArray;
-};
-/* harmony default export */ const scripts_extractArray = (extractArray);
-
-;// CONCATENATED MODULE: ./src/scripts/variables.ts
-
-
-
-
-/**
- * Returns an array of user names.
- *
- * @param selected
- */
-const users = (selected = false) => {
-    const input_users = JSON.parse(core.getInput("users"));
-    if (selected)
-        return scripts_extractArray(input_users, count());
-    else
-        return input_users;
-};
-/**
- * Return the set number of assignees.
- */
-const count = () => {
-    let count = Number(core.getInput("count"));
-    if (count === 0)
-        count = users().length;
-    if (count > users().length)
-        scripts_kill("The number of assignees is larger than the number of users specified.");
-    return count;
-};
-/**
- * Return the GitHub token.
- */
-const token = () => {
-    return core.getInput("token");
-};
-/**
- * Return the number of the pull request.
- */
-const pull_request = () => {
-    const pull_request = github.context.payload.pull_request;
-    if (pull_request === undefined) {
-        scripts_kill("Unable to retrieve information about the pull request.");
-        process.exit(1);
-    }
-    else
-        return pull_request.number;
-};
-
-;// CONCATENATED MODULE: ./src/index.ts
-
-
-
-
-
-Promise.all(users().map(async (user) => {
-    return await scripts_check(user, token());
-})).then(() => {
-    core.info("All specified users can be assigned.");
-    github.getOctokit(token()).rest.issues.addAssignees({
-        ...github.context.repo,
-        issue_number: pull_request(),
-        assignees: users(true)
-    }).then(() => {
-        core.info("Complete This Action ✨");
-        process.exit(0);
-    }).catch(() => {
-        scripts_kill("Cannot be assigned.");
-    });
-}).catch((data) => {
-    const user = data.response.url.match(/[^/]*?$/)[0];
-    scripts_kill(`"${user}" cannot be assigned.`);
-});
-
-})();
-
-module.exports = __webpack_exports__;
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __nccwpck_require__(144);
+/******/ 	module.exports = __webpack_exports__;
+/******/ 	
 /******/ })()
 ;
